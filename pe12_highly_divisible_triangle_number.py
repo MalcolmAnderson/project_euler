@@ -1,68 +1,86 @@
-def find_nth_prime(num_th_prime):
-    if num_th_prime < 1:
-        return []
-    if num_th_prime < 2:
-        return [2]
-    primes = [2]
-    candidate = 2
-    while len(primes) < num_th_prime:
-        candidate += 1
-        could_be_prime = True
-        for prime in primes:
-            if candidate % prime == 0:
-                could_be_prime = False
-                break
-        if could_be_prime:
-            primes.append(candidate)
-            print(f"prime[{len(primes)}] = {primes[-1]}")
-
-    return primes
-
-def get_prime_factors(number, primes):
-    factors = []
-    prime_count = 0
-    while number > 1:
-        # print(f"{primes[prime_count] = } remainder = {number % primes[prime_count]}")
-        if number % primes[prime_count] == 0:
-            factors.append(primes[prime_count])
-            while number % primes[prime_count] == 0: # handles multiple multiples like 28 and 4
-                number //= primes[prime_count]
-        prime_count += 1 # only one prime per
-    return factors
-        
-        
 def get_triangle_numbers_up_to(number):
-    numbers = []
+    triangle_numbers = []
     for i in range(1, number + 1):
-        print(i)
+        if i % 1000 == 0:
+            print(i)
         total = 0
-        for j in range( i + 1):
+        for j in range(i + 1):
             total += j
-        numbers.append(total)
-    return numbers
+        triangle_numbers.append(total)
+    return triangle_numbers
 
 
+def get_factors(number):
+    if number == 1:
+        return [1]
+    list_of_factors = []
+    int_half_the_number_plus_one = number // 2 + 1
+    count = 0
+    for i in range(1, int_half_the_number_plus_one):
+        count += 1
+        if i not in (list_of_factors) and number % i == 0:
+            list_of_factors.append(i)
+            other_number = number // i
+            if other_number not in (list_of_factors):
+                list_of_factors.append(other_number)
+    list_of_factors.sort()
+    list_of_factors[0] = count
+    return list_of_factors
+
+
+def get_factors_2(number):
+    if number == 1:
+        return [1]
+    list_of_factors = []
+    current_number = 1
+    max_number = number
+    count = 0
+    while current_number < max_number:
+        count += 1
+        if current_number not in (list_of_factors) and number % current_number == 0:
+            list_of_factors.append(current_number)
+            other_number = number // current_number
+            if other_number not in (list_of_factors):
+                list_of_factors.append(other_number)
+            max_number = number // current_number
+        current_number += 1
+    list_of_factors.sort()
+    list_of_factors[0] = count
+    return list_of_factors
+
+
+def print_status(max_factor_count, nth_triange_number, factor_count, current_triange_number):
+    print(f"{max_factor_count = } {nth_triange_number = } {factor_count} {current_triange_number = }")
 
 
 if __name__ == "__main__":
-    num_th_prime = 50000
-    primes = find_nth_prime(num_th_prime)
-    print(primes)
-    print(primes[-1])
+    if True:
+        factor_count = 0
+        max_factor_count = 0
+        nth_triange_number = 0
+        current_triange_number = 0
+        while factor_count < 501:
+            nth_triange_number += 1
+            current_triange_number += nth_triange_number
+            factors = get_factors_2(current_triange_number)
+            factor_count = len(factors) - 1
+            if factor_count > max_factor_count:
+                max_factor_count = factor_count
+                print_status(max_factor_count, nth_triange_number, factor_count, current_triange_number)
+            # print(f"{factor_count = } {nth_triange_number = } {current_triange_number = } {factors = }")
+            if nth_triange_number % 100 == 0:
+                print_status(max_factor_count, nth_triange_number, factor_count, current_triange_number)
+        print("...")
+        print_status(max_factor_count, nth_triange_number, factor_count, current_triange_number)
+    else:
+        test_number = 289978899
+        fast_run_factors = get_factors_2(test_number)
+        slow_run_factors = get_factors(test_number)
+        fast_run = fast_run_factors[0]
+        slow_run = slow_run_factors[0]
+        print(
+            f"{len(fast_run_factors)} {len(slow_run_factors)} {fast_run = } {slow_run = } fast / slow = {fast_run / slow_run * 100}"
+        )
 
-    triangles = get_triangle_numbers_up_to(200000)
-    print(triangles)
-
-    max_factors = 0
-    for num in triangles:
-        print(f"{num = }")
-        factors = get_prime_factors(num, primes)
-        print(factors)
-        if len(factors) > max_factors:
-            max_factors = len(factors)
-        print(f"{num = } {len(factors) = } max_factors = {max_factors}")
-        trigger = len(factors) > 500
-        if trigger:
-            quit()
-
-    # factors = get_prime_factors(6409990, primes)
+    # triangles = get_triangle_numbers_up_to(7)
+    # print(triangles)
